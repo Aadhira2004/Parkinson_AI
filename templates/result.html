@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clinical Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; padding: 60px 0; color: #334155; }
+        .report-paper { background: white; border-radius: 30px; padding: 50px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .status-pill { display: inline-block; padding: 8px 24px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 20px; }
+        .biomarker-card { background: #f8fafc; border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #f1f5f9; }
+        .chart-area { background: #ffffff; padding: 20px; border-radius: 50%; }
+        .btn-print { background: #334155; color: white; border-radius: 12px; padding: 12px 30px; font-weight: 600; border: none; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 report-paper">
+                <div class="text-center mb-5">
+                    <div class="status-pill" style="background: {{ color }}22; color: {{ color }}; border: 1px solid {{ color }};">
+                        Screening Status: {{ status }}
+                    </div>
+                    <h1 class="fw-bold">AI Neuro-Screening Report</h1>
+                    <p class="text-muted">Multimodal Fusion: Ocular, Sleep, and Olfactory Biomarkers</p>
+                </div>
+
+                <div class="row align-items-center mt-5">
+                    <div class="col-md-6">
+                        <div class="chart-area">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-5">
+                        <div class="biomarker-card">
+                            <small class="text-primary fw-bold">Ocular Marker</small>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Blink Frequency</span>
+                                <span class="h5 mb-0">{{ blinks }} BPM</span>
+                            </div>
+                        </div>
+                        <div class="biomarker-card">
+                            <small class="text-info fw-bold">Sleep Health</small>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">RBD Score</span>
+                                <span class="h5 mb-0">{{ sleep }}/10</span>
+                            </div>
+                        </div>
+                        <div class="biomarker-card">
+                            <small class="text-danger fw-bold">Olfactory Function</small>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Hyposmia Score</span>
+                                <span class="h5 mb-0">{{ smell }}/10</span>
+                            </div>
+                        </div>
+                        <button class="btn-print mt-4" onclick="window.print()">Download Clinical PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['Blink Rate', 'Sleep Patterns', 'Smell Accuracy'],
+                datasets: [{
+                    label: 'Patient Data',
+                    data: [{{ blinks }}, {{ 10-sleep }}, {{ 10-smell }}],
+                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#0ea5e9',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0ea5e9'
+                }]
+            },
+            options: {
+                scales: { r: { grid: { color: '#e2e8f0' }, pointLabels: { font: { size: 14, weight: '600' } }, ticks: { display: false } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>

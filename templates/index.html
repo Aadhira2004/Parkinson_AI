@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocular Assessment | Clinical AI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f8fafc; color: #1e293b; font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; }
+        .assessment-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .video-wrapper { position: relative; border-radius: 20px; overflow: hidden; border: 4px solid #f1f5f9; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
+        #video-feed { width: 100%; transform: scaleX(-1); }
+        .timer-circle { width: 120px; height: 120px; border-radius: 50%; border: 8px solid #e2e8f0; border-top: 8px solid #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 700; color: #0ea5e9; margin-bottom: 20px; transition: 0.3s; }
+        .stat-badge { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; padding: 10px 20px; border-radius: 12px; font-weight: 600; display: inline-block; }
+        .btn-start { background: #0ea5e9; color: white; border: none; padding: 15px 40px; border-radius: 14px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s ease; width: 100%; }
+        .btn-start:hover { background: #0284c7; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3); }
+        h1 { color: #0f172a; font-weight: 700; font-size: 1.75rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 assessment-card">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <div class="video-wrapper">
+                            <img id="video-feed" src="{{ url_for('video_feed') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-5 ps-lg-5">
+                        <div class="mb-2 text-uppercase text-primary small fw-bold tracking-wider">Stage 01: Motor Function</div>
+                        <h1>Ocular Motor <br>Analysis</h1>
+                        <p class="text-muted mb-4">Please look at the camera naturally. We are measuring spontaneous blink frequency as a neurological biomarker.</p>
+                        
+                        <div class="d-flex flex-column align-items-center mb-4">
+                            <div id="timer" class="timer-circle">60s</div>
+                            <div class="stat-badge">
+                                Blinks Detected: <span id="blink-count">0</span>
+                            </div>
+                        </div>
+
+                        <button id="start-btn" class="btn-start" onclick="startScreening()">Start Clinical Scan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function startScreening() {
+    // 1. Add the visual pulse effect to the timer
+    document.getElementById('timer').classList.add('scanning-active');
+
+    // 2. Disable the button so the user can't click it twice
+    const startBtn = document.getElementById('start-btn');
+    startBtn.disabled = true;
+    startBtn.innerText = "Scanning in Progress...";
+
+    let timeLeft = 60;
+
+    // 3. Start the interval
+    const interval = setInterval(() => {
+        // Fetch blink count from Python app.py
+        fetch('/get_blinks')
+            .then(response => response.json())
+            .then(data => { 
+                document.getElementById('blink-count').innerText = data.blinks; 
+            });
+
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft + "s";
+
+        // 4. When time is up, stop and redirect
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            const finalBlinks = document.getElementById('blink-count').innerText;
+            window.location.href = "/questions?blinks=" + finalBlinks;
+        }
+    }, 1000);
+}
+    </script>
+</body>
+</html>

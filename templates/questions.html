@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Symptom Assessment | AI Parkinson's Screening</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background: #0f0c29; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 0; }
+        .section-card { background: rgba(255, 255, 255, 0.05); border: 1px solid #4834d4; border-radius: 15px; padding: 25px; margin-bottom: 30px; transition: 0.3s; }
+        .section-card:hover { border-color: #a2d2ff; box-shadow: 0 0 15px rgba(162, 210, 255, 0.2); }
+        h2, h4 { color: #a2d2ff; font-weight: 600; }
+        .question-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .radio-group { display: flex; gap: 20px; }
+        .btn-primary { background: #4834d4; border: none; padding: 15px 40px; font-size: 1.2rem; border-radius: 30px; }
+        .btn-primary:hover { background: #686de0; }
+        .badge-info { background: #22a6b3; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2>Stage 2: Multimodal Clinical Data</h2>
+            <p>Please answer the following 20 questions regarding non-motor symptoms.</p>
+            <span class="badge badge-info">Blinks Detected: {{ blinks }}</span>
+        </div>
+
+        <form action="/report" method="POST">
+            <input type="hidden" name="blinks" value="{{ blinks }}">
+
+            <div class="section-card">
+                <h4>Section 1: REM Sleep Behavior (10 Questions)</h4>
+                <p class="text-muted small">Assessing for Rapid Eye Movement Sleep Behavior Disorder (RBD).</p>
+                <div class="question-row"><span>1. Do you act out vivid or intense dreams?</span><div class="radio-group"><label><input type="radio" name="s1" value="yes"> Yes</label><label><input type="radio" name="s1" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>2. Have you ever fallen out of bed while sleeping?</span><div class="radio-group"><label><input type="radio" name="s2" value="yes"> Yes</label><label><input type="radio" name="s2" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>3. Do you experience sudden muscle jerks as you fall asleep?</span><div class="radio-group"><label><input type="radio" name="s3" value="yes"> Yes</label><label><input type="radio" name="s3" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>4. Do you talk or shout loudly during sleep?</span><div class="radio-group"><label><input type="radio" name="s4" value="yes"> Yes</label><label><input type="radio" name="s4" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>5. Do you feel excessively tired during the day?</span><div class="radio-group"><label><input type="radio" name="s5" value="yes"> Yes</label><label><input type="radio" name="s5" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>6. Do you have an irresistible urge to move your legs at night?</span><div class="radio-group"><label><input type="radio" name="s6" value="yes"> Yes</label><label><input type="radio" name="s6" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>7. Do you wake up more than 3 times per night?</span><div class="radio-group"><label><input type="radio" name="s7" value="yes"> Yes</label><label><input type="radio" name="s7" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>8. Have you injured yourself or a partner during sleep?</span><div class="radio-group"><label><input type="radio" name="s8" value="yes"> Yes</label><label><input type="radio" name="s8" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>9. Are your dreams often frightening or intense?</span><div class="radio-group"><label><input type="radio" name="s9" value="yes"> Yes</label><label><input type="radio" name="s9" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>10. Do you experience "Sleep Paralysis" frequently?</span><div class="radio-group"><label><input type="radio" name="s10" value="yes"> Yes</label><label><input type="radio" name="s10" value="no" checked> No</label></div></div>
+            </div>
+
+            <div class="section-card">
+                <h4>Section 2: Olfactory Function (10 Questions)</h4>
+                <p class="text-muted small">Assessing for Hyposmia (loss of smell), a key prodromal marker.</p>
+                <div class="question-row"><span>1. Has your general sense of smell decreased recently?</span><div class="radio-group"><label><input type="radio" name="o1" value="yes"> Yes</label><label><input type="radio" name="o1" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>2. Is it hard to smell strong scents like coffee?</span><div class="radio-group"><label><input type="radio" name="o2" value="yes"> Yes</label><label><input type="radio" name="o2" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>3. Does food taste "bland" compared to last year?</span><div class="radio-group"><label><input type="radio" name="o3" value="yes"> Yes</label><label><input type="radio" name="o3" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>4. Can you smell a gas leak or smoke easily?</span><div class="radio-group"><label><input type="radio" name="o4" value="no"> No (Loss)</label><label><input type="radio" name="o4" value="yes" checked> Yes</label></div></div>
+                <div class="question-row"><span>5. Has your ability to smell flowers diminished?</span><div class="radio-group"><label><input type="radio" name="o5" value="yes"> Yes</label><label><input type="radio" name="o5" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>6. Is it hard to distinguish between different scents?</span><div class="radio-group"><label><input type="radio" name="o6" value="yes"> Yes</label><label><input type="radio" name="o6" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>7. Has this change occurred in the last 2 years?</span><div class="radio-group"><label><input type="radio" name="o7" value="yes"> Yes</label><label><input type="radio" name="o7" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>8. Do you need more salt/spice to enjoy food?</span><div class="radio-group"><label><input type="radio" name="o8" value="yes"> Yes</label><label><input type="radio" name="o8" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>9. Is the smell of soap or detergent less sharp?</span><div class="radio-group"><label><input type="radio" name="o9" value="yes"> Yes</label><label><input type="radio" name="o9" value="no" checked> No</label></div></div>
+                <div class="question-row"><span>10. Do you miss smells that others mention?</span><div class="radio-group"><label><input type="radio" name="o10" value="yes"> Yes</label><label><input type="radio" name="o10" value="no" checked> No</label></div></div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Generate Diagnostic Report</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
