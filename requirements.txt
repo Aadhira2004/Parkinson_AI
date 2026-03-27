@@ -1,6 +1,6 @@
 streamlit==1.55.0
 mediapipe==0.10.33
-opencv-python-headless==4.13.0.92
 numpy
-streamlit-webrtc
-av
+streamlit-webrtc==0.64.5
+av==16.1.0
+reportlab

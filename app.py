@@ -1,5 +1,8 @@
 import streamlit as st
 import av
+import os
+os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
+os.environ["OPENCV_VIDEOIO_PRIORITY_DSHOW"] = "0"
 import cv2
 import math
 import numpy as np
