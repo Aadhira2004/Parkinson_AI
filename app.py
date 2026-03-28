@@ -7,7 +7,6 @@ import time
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib import colors
 from reportlab.lib.units import inch
 
 # Direct imports for macOS/M4 stability
@@ -43,7 +42,7 @@ class BlinkProcessor(VideoProcessorBase):
 
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
-        img = cv2.flip(img, 1) # Mirroring for user
+        img = cv2.flip(img, 1) 
         rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.face_mesh.process(rgb)
 
@@ -51,7 +50,6 @@ class BlinkProcessor(VideoProcessorBase):
             mesh = results.multi_face_landmarks[0].landmark
             avg_ear = (calculate_ear(mesh, LEFT_EYE) + calculate_ear(mesh, RIGHT_EYE)) / 2.0
 
-            # Thresholds optimized for M4 FaceTime HD Camera
             if avg_ear < 0.20:
                 self.eye_closed = True
             elif avg_ear > 0.25 and self.eye_closed:
@@ -66,7 +64,6 @@ if "step" not in st.session_state:
 
 st.title("🧠 Neurovision AI – Clinical Screening")
 
-# --- STAGE 1: SCAN ---
 if st.session_state.step == "scan":
     st.subheader("Stage 1: 60-Second Ocular Motor Analysis")
     st.info("Ensure your face is well-lit. The timer starts when the camera activates.")
@@ -98,7 +95,6 @@ if st.session_state.step == "scan":
             time.sleep(0.1)
             st.rerun()
 
-# --- STAGE 2: QUESTIONS ---
 elif st.session_state.step == "questions":
     st.subheader("Stage 2: Non-Motor Symptom Assessment")
     
@@ -119,7 +115,6 @@ elif st.session_state.step == "questions":
         st.session_state.step = "report"
         st.rerun()
 
-# --- STAGE 3: REPORT ---
 elif st.session_state.step == "report":
     bpm = st.session_state.blinks
     score = st.session_state.total_score
@@ -136,26 +131,6 @@ elif st.session_state.step == "report":
         st.warning("Correlation: Moderate. Consider follow-up monitoring.")
     else:
         st.success("Correlation: Low. Results are within typical range.")
-
-    if st.button("Download PDF Report"):
-        filename = "Neurovision_Report.pdf"
-        doc = SimpleDocTemplate(filename)
-        styles = [ParagraphStyle(name='Title', fontSize=18, spaceAfter=20),
-                  ParagraphStyle(name='Body', fontSize=12, spaceAfter=10)]
-        
-        elements = [
-            Paragraph("Neurovision AI Clinical Report", styles[0]),
-            Spacer(1, 0.2*inch),
-            Paragraph(f"Blink Rate: {bpm} BPM", styles[1]),
-            Paragraph(f"Non-Motor Symptom Score: {score}/6", styles[1]),
-            Paragraph(f"Date: {time.strftime('%Y-%m-%d %H:%M')}", styles[1]),
-            Spacer(1, 0.5*inch),
-            Paragraph("Disclaimer: This is an AI screening tool, not a medical diagnosis.", styles[1])
-        ]
-        doc.build(elements)
-        
-        with open(filename, "rb") as f:
-            st.download_button("Save Report", f, file_name=filename)
 
     if st.button("Start New Session"):
         for key in list(st.session_state.keys()): del st.session_state[key]
