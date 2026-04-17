@@ -160,7 +160,7 @@ if st.session_state.step == "scan":
     ctx = webrtc_streamer(rtc_configuration=RTC_CONFIGURATION, 
         key="blink-detection",
         video_processor_factory=BlinkProcessor,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        
         media_stream_constraints={"video": True, "audio": False},
     )
 
