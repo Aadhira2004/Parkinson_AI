@@ -1,7 +1,3 @@
-from streamlit_webrtc import RTCConfiguration
-RTC_CONFIGURATION = RTCConfiguration({
-    "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-})
 import streamlit as st
 import av
 import cv2
@@ -157,10 +153,10 @@ if st.session_state.step == "scan":
     st.subheader("Stage 1: 60-Second Ocular Motor Analysis")
     timer_placeholder = st.empty()
     
-    ctx = webrtc_streamer(rtc_configuration=RTC_CONFIGURATION, 
+    ctx = webrtc_streamer(
         key="blink-detection",
         video_processor_factory=BlinkProcessor,
-        
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
         media_stream_constraints={"video": True, "audio": False},
     )
 
@@ -209,27 +205,3 @@ elif st.session_state.step == "report":
     if st.button("Reset Test"):
         for key in list(st.session_state.keys()): del st.session_state[key]
         st.rerun()
-
-if __name__ == "__main__":
-    pass
-
-
-# -------- WebRTC Safe Config --------
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
-
-RTC_CONFIGURATION = {
-    "iceServers": [
-        {"urls": ["stun:stun.l.google.com:19302"]},
-        {"urls": ["stun:stun1.l.google.com:19302"]},
-    ]
-}
-
-webrtc_streamer(
-    key="camera",
-    mode=WebRtcMode.SENDRECV,
-    rtc_configuration=RTC_CONFIGURATION,
-    media_stream_constraints={
-        "video": True,
-        "audio": False,
-    },
-)
