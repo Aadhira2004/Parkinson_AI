@@ -224,17 +224,6 @@ RTC_CONFIGURATION = {
     ]
 }
 
-
-# ---- SINGLE CAMERA BLOCK ----
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
-
-RTC_CONFIGURATION = {
-    "iceServers": [
-        {"urls": ["stun:stun.l.google.com:19302"]},
-        {"urls": ["stun:stun1.l.google.com:19302"]},
-    ]
-}
-
 webrtc_streamer(
     key="camera",
     mode=WebRtcMode.SENDRECV,
@@ -244,5 +233,3 @@ webrtc_streamer(
         "audio": False,
     },
 )
-# ---- END CAMERA BLOCK ----
-
